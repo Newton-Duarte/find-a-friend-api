@@ -43,4 +43,17 @@ describe('Create Org', () => {
       }),
     ).rejects.toBeInstanceOf(OrgAlreadyExistsError)
   })
+
+  it('should be able to create a password hash', async () => {
+    const rawPassword = '123456'
+
+    const { org } = await sut.execute({
+      ...CREATE_ORG_MOCK,
+      password: rawPassword,
+      name: 'ORG 1',
+      phone: '82 9 9999-9999',
+    })
+
+    expect(org.password).not.toEqual(rawPassword)
+  })
 })
