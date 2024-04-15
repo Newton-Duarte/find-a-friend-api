@@ -1,19 +1,35 @@
 import { OrgsRepository } from '@/repositories/orgs-repository'
+import { Organization } from '@prisma/client'
+import { OrgAlreadyExistsError } from './errors/org-already-exists-error'
 
 export interface CreateOrgRequest {
   name: string
   phone: string
-  description?: string
+  owner_name: string
+  email: string
+  password: string
+  description?: string | null
+  street_name?: string | null
+  street_number?: string | null
+  neighborhood?: string | null
+  city?: string | null
+  postal_code?: string | null
 }
 
 export interface CreateOrgResponse {
-  org: any
+  org: Organization
 }
 
 export class CreateOrgService {
   constructor(private orgsRepository: OrgsRepository) {}
 
   async execute(data: CreateOrgRequest) {
+    const orgWithSameEmail = await this.orgsRepository.findByEmail(data.email)
+
+    if (orgWithSameEmail) {
+      throw new OrgAlreadyExistsError()
+    }
+
     const org = await this.orgsRepository.create(data)
 
     return { org }
