@@ -1,6 +1,10 @@
-import { InMemoryOrgsRepository } from '@/repositories/in-memory/in-memory-orgs-repository'
+import {
+  CREATE_ORG_MOCK,
+  InMemoryOrgsRepository,
+} from '@/repositories/in-memory/in-memory-orgs-repository'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { CreateOrgService } from './create-org'
+import { OrgAlreadyExistsError } from './errors/org-already-exists-error'
 
 let orgsRepository: InMemoryOrgsRepository
 let sut: CreateOrgService
@@ -13,12 +17,30 @@ describe('Create Org', () => {
 
   it('should be able to create an organization', async () => {
     const { org } = await sut.execute({
-      name: 'Org 1',
-      description: 'org description',
-      phone: '82999999999',
+      ...CREATE_ORG_MOCK,
+      name: 'ORG 1',
+      phone: '82 9 9999-9999',
     })
 
     expect(org.id).toEqual(expect.any(String))
     expect(org.phone).toEqual(org.phone)
+  })
+
+  it('should not be able to create an organization with same email', async () => {
+    const { org } = await sut.execute({
+      ...CREATE_ORG_MOCK,
+      name: 'ORG 1',
+      phone: '82 9 9999-9999',
+    })
+
+    const org1Email = org.email
+
+    await expect(() =>
+      sut.execute({
+        ...CREATE_ORG_MOCK,
+        name: 'ORG 2',
+        email: org1Email,
+      }),
+    ).rejects.toBeInstanceOf(OrgAlreadyExistsError)
   })
 })
