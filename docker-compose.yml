@@ -1,9 +1,9 @@
 version: '3'
 
 services:
-  api-solid-database:
+  find-a-friend-api-database:
     image: bitnami/postgresql
-    container_name: api-solid-database
+    container_name: find-a-friend-api-database
     ports:
       - 5432:5432
     environment:
