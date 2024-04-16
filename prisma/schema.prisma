@@ -18,7 +18,7 @@ enum Animal {
   CAT
 }
 
-enum AnimaSize {
+enum AnimalSize {
   SMALL
   MEDIUM
   LARGE
@@ -72,11 +72,12 @@ model Pet {
   name               String
   description        String?
   type               Animal
-  size               AnimaSize
+  size               AnimalSize
   age                AnimalAge
   independence_level IndependenceLevel
   energy_level       EnergyLevel
   ambient            AnimalAmbient
+  created_at         DateTime          @default(now())
 
   organization    Organization @relation(fields: [organization_id], references: [id])
   organization_id String
