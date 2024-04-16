@@ -13,6 +13,41 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Animal {
+  DOG
+  CAT
+}
+
+enum AnimaSize {
+  SMALL
+  MEDIUM
+  LARGE
+}
+
+enum AnimalAge {
+  YOUNG
+  ADULT
+  AGED
+}
+
+enum IndependenceLevel {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum EnergyLevel {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum AnimalAmbient {
+  SMALL
+  MEDIUM
+  LARGE
+}
+
 model Organization {
   id            String   @id @default(uuid())
   name          String
@@ -27,6 +62,24 @@ model Organization {
   city          String?
   postal_code   String?
   created_at    DateTime @default(now())
+  pet           Pet[]
 
   @@map("organizations")
+}
+
+model Pet {
+  id                 String            @id @default(uuid())
+  name               String
+  description        String?
+  type               Animal
+  size               AnimaSize
+  age                AnimalAge
+  independence_level IndependenceLevel
+  energy_level       EnergyLevel
+  ambient            AnimalAmbient
+
+  organization    Organization @relation(fields: [organization_id], references: [id])
+  organization_id String
+
+  @@map("pets")
 }
