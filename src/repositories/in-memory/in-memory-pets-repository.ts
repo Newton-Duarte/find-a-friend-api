@@ -1,9 +1,10 @@
 import { randomUUID } from 'node:crypto'
 import { Pet, Prisma } from '@prisma/client'
-import { PetsRepository } from '../pets-repository'
+import { FindManyByCityParams, PetsRepository } from '../pets-repository'
+import { InMemoryOrgsRepository } from './in-memory-orgs-repository'
 
 export const CREATE_PET_MOCK: Prisma.PetUncheckedCreateInput = {
-  name: 'ORG 1',
+  name: 'PET 1',
   type: 'DOG',
   age: 'YOUNG',
   size: 'SMALL',
@@ -15,6 +16,8 @@ export const CREATE_PET_MOCK: Prisma.PetUncheckedCreateInput = {
 }
 
 export class InMemoryPetsRepository implements PetsRepository {
+  constructor(private orgsRepository: InMemoryOrgsRepository) {}
+
   public pets: Pet[] = []
 
   async create(data: Prisma.PetUncheckedCreateInput) {
@@ -29,6 +32,7 @@ export class InMemoryPetsRepository implements PetsRepository {
       independence_level: data.independence_level,
       description: data.description ?? null,
       organization_id: data.organization_id,
+      created_at: new Date(),
     }
 
     this.pets.push(pet)
@@ -37,8 +41,22 @@ export class InMemoryPetsRepository implements PetsRepository {
   }
 
   async findById(id: string) {
-    const org = this.pets.find((org) => org.id === id)
+    const pet = this.pets.find((pet) => pet.id === id)
 
-    return org || null
+    return pet || null
+  }
+
+  async findManyByCity({ city, page }: FindManyByCityParams) {
+    const findPets = this.pets
+      .filter((pet) => {
+        const petOrg = this.orgsRepository.orgs.find(
+          (org) => org.id === pet.organization_id,
+        )
+
+        return petOrg?.city === city
+      })
+      .slice((page - 1) * 20, page * 20)
+
+    return findPets
   }
 }
