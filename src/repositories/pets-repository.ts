@@ -1,8 +1,19 @@
-import { Pet, Prisma } from '@prisma/client'
+import {
+  AnimalAge,
+  AnimalSize,
+  EnergyLevel,
+  IndependenceLevel,
+  Pet,
+  Prisma,
+} from '@prisma/client'
 
 export type FindManyByCityParams = {
   city: string
   page: number
+  age?: AnimalAge
+  size?: AnimalSize
+  energyLevel?: EnergyLevel
+  independencyLevel?: IndependenceLevel
 }
 
 export interface PetsRepository {
