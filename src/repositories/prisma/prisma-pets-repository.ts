@@ -21,9 +21,24 @@ export class PrismaPetsRepository implements PetsRepository {
     return pet
   }
 
-  async findManyByCity({ city, page }: FindManyByCityParams) {
+  async findManyByCity({
+    city,
+    page,
+    age,
+    size,
+    energyLevel,
+    independencyLevel,
+  }: FindManyByCityParams) {
+    const filters = {
+      age: age || undefined,
+      size: size || undefined,
+      energyLevel: energyLevel || undefined,
+      independencyLevel: independencyLevel || undefined,
+    }
+
     const pet = await prisma.pet.findMany({
       where: {
+        ...filters,
         organization: {
           city,
         },
