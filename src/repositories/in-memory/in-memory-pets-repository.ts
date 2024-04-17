@@ -46,7 +46,14 @@ export class InMemoryPetsRepository implements PetsRepository {
     return pet || null
   }
 
-  async findManyByCity({ city, page }: FindManyByCityParams) {
+  async findManyByCity({
+    city,
+    page,
+    age,
+    size,
+    energyLevel,
+    independencyLevel,
+  }: FindManyByCityParams) {
     const findPets = this.pets
       .filter((pet) => {
         const petOrg = this.orgsRepository.orgs.find(
@@ -54,6 +61,14 @@ export class InMemoryPetsRepository implements PetsRepository {
         )
 
         return petOrg?.city === city
+      })
+      .filter((petInCity) => {
+        return (
+          petInCity.age.includes(age || '') &&
+          petInCity.size.includes(size || '') &&
+          petInCity.energy_level.includes(energyLevel || '') &&
+          petInCity.independence_level.includes(independencyLevel || '')
+        )
       })
       .slice((page - 1) * 20, page * 20)
 
