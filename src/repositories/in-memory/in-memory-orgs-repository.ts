@@ -52,4 +52,8 @@ export class InMemoryOrgsRepository implements OrgsRepository {
 
     return org || null
   }
+
+  async findMany() {
+    return this.orgs
+  }
 }
