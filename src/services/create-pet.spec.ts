@@ -35,6 +35,26 @@ describe('Create Pet', () => {
     expect(pet.id).toEqual(expect.any(String))
   })
 
+  it('should be able to create a pet with adoption requirements', async () => {
+    const org = await orgsRepository.create({
+      ...CREATE_ORG_MOCK,
+    })
+
+    const { pet } = await sut.execute({
+      ...CREATE_PET_MOCK,
+      name: 'Pet 1',
+      organization_id: org.id,
+      adoption_requirements: [
+        'Requirement 1',
+        'Requirement 2',
+        'Requirement 3',
+      ],
+    })
+
+    expect(pet.id).toEqual(expect.any(String))
+    expect(pet.adoption_requirements).toHaveLength(3)
+  })
+
   it('should not be able to create a pet without organization', async () => {
     await expect(() =>
       sut.execute({
