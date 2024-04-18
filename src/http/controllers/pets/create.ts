@@ -22,6 +22,7 @@ export async function create(request: FastifyRequest, reply: FastifyReply) {
     independence_level: z.nativeEnum(IndependenceLevel),
     energy_level: z.nativeEnum(EnergyLevel),
     organization_id: z.string().uuid(),
+    adoption_requirements: z.array(z.string()).optional(),
   })
 
   const {
@@ -34,6 +35,7 @@ export async function create(request: FastifyRequest, reply: FastifyReply) {
     energy_level,
     ambient,
     organization_id,
+    adoption_requirements,
   } = requestBodySchema.parse(request.body)
 
   try {
@@ -49,6 +51,7 @@ export async function create(request: FastifyRequest, reply: FastifyReply) {
       energy_level,
       ambient,
       organization_id,
+      adoption_requirements,
     })
 
     return reply.status(201).send({ pet })
