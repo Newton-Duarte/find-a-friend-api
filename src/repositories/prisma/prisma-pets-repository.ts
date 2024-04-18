@@ -1,11 +1,46 @@
-import { Prisma } from '@prisma/client'
 import { prisma } from '@/lib/prisma'
-import { FindManyByCityParams, PetsRepository } from '../pets-repository'
+import {
+  CreatePetInput,
+  FindManyByCityParams,
+  PetsRepository,
+} from '../pets-repository'
 
 export class PrismaPetsRepository implements PetsRepository {
-  async create(data: Prisma.PetUncheckedCreateInput) {
+  async create({
+    name,
+    description,
+    type,
+    age,
+    size,
+    ambient,
+    energy_level,
+    independence_level,
+    organization_id,
+    adoption_requirements = [],
+  }: CreatePetInput) {
     const pet = await prisma.pet.create({
-      data,
+      data: {
+        name,
+        description,
+        type,
+        age,
+        size,
+        ambient,
+        energy_level,
+        independence_level,
+        organization_id,
+        adoption_requirements: {
+          createMany: {
+            data:
+              adoption_requirements?.map((requirements) => ({
+                description: requirements,
+              })) || [],
+          },
+        },
+      },
+      include: {
+        adoption_requirements: true,
+      },
     })
 
     return pet
@@ -15,6 +50,9 @@ export class PrismaPetsRepository implements PetsRepository {
     const pet = await prisma.pet.findUnique({
       where: {
         id,
+      },
+      include: {
+        adoption_requirements: true,
       },
     })
 
