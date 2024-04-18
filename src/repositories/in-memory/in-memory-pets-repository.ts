@@ -1,9 +1,13 @@
 import { randomUUID } from 'node:crypto'
-import { Pet, Prisma } from '@prisma/client'
-import { FindManyByCityParams, PetsRepository } from '../pets-repository'
+import {
+  CreatePetInput,
+  FindManyByCityParams,
+  PetWithAdoptionRequirements,
+  PetsRepository,
+} from '../pets-repository'
 import { InMemoryOrgsRepository } from './in-memory-orgs-repository'
 
-export const CREATE_PET_MOCK: Prisma.PetUncheckedCreateInput = {
+export const CREATE_PET_MOCK: CreatePetInput = {
   name: 'PET 1',
   type: 'DOG',
   age: 'YOUNG',
@@ -13,25 +17,46 @@ export const CREATE_PET_MOCK: Prisma.PetUncheckedCreateInput = {
   independence_level: 'LOW',
   description: '',
   organization_id: '',
+  adoption_requirements: [],
 }
 
 export class InMemoryPetsRepository implements PetsRepository {
   constructor(private orgsRepository: InMemoryOrgsRepository) {}
 
-  public pets: Pet[] = []
+  public pets: PetWithAdoptionRequirements[] = []
 
-  async create(data: Prisma.PetUncheckedCreateInput) {
-    const pet: Pet = {
-      id: data.id ?? randomUUID(),
-      name: data.name,
-      type: data.type,
-      age: data.age,
-      size: data.size,
-      ambient: data.ambient,
-      energy_level: data.energy_level,
-      independence_level: data.independence_level,
-      description: data.description ?? null,
-      organization_id: data.organization_id,
+  async create({
+    id,
+    name,
+    type,
+    age,
+    size,
+    ambient,
+    energy_level,
+    independence_level,
+    description,
+    organization_id,
+    adoption_requirements = [],
+  }: CreatePetInput) {
+    const petId = id ?? randomUUID()
+
+    const pet = {
+      id: petId,
+      name,
+      type,
+      age,
+      size,
+      ambient,
+      energy_level,
+      independence_level,
+      description: description ?? null,
+      organization_id,
+      adoption_requirements:
+        adoption_requirements?.map((requirement) => ({
+          id: randomUUID(),
+          description: requirement,
+          pet_id: petId,
+        })) || [],
       created_at: new Date(),
     }
 
