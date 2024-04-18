@@ -5,9 +5,11 @@ import {
   AnimalSize,
   EnergyLevel,
   IndependenceLevel,
-  Pet,
 } from '@prisma/client'
-import { PetsRepository } from '@/repositories/pets-repository'
+import {
+  PetWithAdoptionRequirements,
+  PetsRepository,
+} from '@/repositories/pets-repository'
 import { OrgsRepository } from '@/repositories/orgs-repository'
 import { PetWithoutOrganizationError } from './errors/pet-without-organization-error'
 
@@ -21,10 +23,11 @@ export interface CreatePetRequest {
   independence_level: IndependenceLevel
   description?: string | null
   organization_id: string
+  adoption_requirements?: string[] | null
 }
 
 export interface CreatePetResponse {
-  pet: Pet
+  pet: PetWithAdoptionRequirements
 }
 
 export class CreatePetService {
