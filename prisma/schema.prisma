@@ -79,8 +79,19 @@ model Pet {
   ambient            AnimalAmbient
   created_at         DateTime          @default(now())
 
-  organization    Organization @relation(fields: [organization_id], references: [id])
-  organization_id String
+  organization          Organization              @relation(fields: [organization_id], references: [id])
+  organization_id       String
+  adoption_requirements PetAdoptionRequirements[]
 
   @@map("pets")
+}
+
+model PetAdoptionRequirements {
+  id          String @id @default(uuid())
+  description String
+
+  pet    Pet    @relation(fields: [pet_id], references: [id])
+  pet_id String
+
+  @@map("pet_adoption_requirements")
 }
