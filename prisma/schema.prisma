@@ -82,6 +82,7 @@ model Pet {
   organization          Organization              @relation(fields: [organization_id], references: [id])
   organization_id       String
   adoption_requirements PetAdoptionRequirements[]
+  images                PetImages[]
 
   @@map("pets")
 }
@@ -94,4 +95,14 @@ model PetAdoptionRequirements {
   pet_id String
 
   @@map("pet_adoption_requirements")
+}
+
+model PetImages {
+  id  String @id @default(uuid())
+  url String
+
+  pet    Pet    @relation(fields: [pet_id], references: [id])
+  pet_id String
+
+  @@map("pet_images")
 }
