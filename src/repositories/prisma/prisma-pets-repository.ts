@@ -17,6 +17,7 @@ export class PrismaPetsRepository implements PetsRepository {
     independence_level,
     organization_id,
     adoption_requirements = [],
+    images = [],
   }: CreatePetInput) {
     const pet = await prisma.pet.create({
       data: {
@@ -37,9 +38,18 @@ export class PrismaPetsRepository implements PetsRepository {
               })) || [],
           },
         },
+        images: {
+          createMany: {
+            data:
+              images?.map((url) => ({
+                url,
+              })) || [],
+          },
+        },
       },
       include: {
         adoption_requirements: true,
+        images: true,
       },
     })
 
@@ -53,6 +63,7 @@ export class PrismaPetsRepository implements PetsRepository {
       },
       include: {
         adoption_requirements: true,
+        images: true,
       },
     })
 
