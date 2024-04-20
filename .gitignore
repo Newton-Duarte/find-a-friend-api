@@ -207,5 +207,6 @@ db/*.db
 .env.test
 
 build
+tmp
 
 # End of https://www.toptal.com/developers/gitignore/api/node,windows,linux,visualstudiocode
