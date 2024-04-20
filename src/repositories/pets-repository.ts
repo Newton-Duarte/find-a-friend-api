@@ -30,16 +30,18 @@ export type CreatePetInput = {
   description?: string | null
   organization_id: string
   adoption_requirements?: string[] | null
+  images?: string[] | null
 }
 
-export type PetWithAdoptionRequirements = Prisma.PetGetPayload<{
+export type PetWithRelations = Prisma.PetGetPayload<{
   include: {
     adoption_requirements: true
+    images: true
   }
 }>
 
 export interface PetsRepository {
-  findById(id: string): Promise<PetWithAdoptionRequirements | null>
+  findById(id: string): Promise<PetWithRelations | null>
   findManyByCity(params: FindManyByCityParams): Promise<Pet[]>
-  create(data: CreatePetInput): Promise<PetWithAdoptionRequirements>
+  create(data: CreatePetInput): Promise<PetWithRelations>
 }
