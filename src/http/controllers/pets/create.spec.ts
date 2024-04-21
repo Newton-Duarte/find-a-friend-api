@@ -3,7 +3,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import request from 'supertest'
 import { createAndAuthenticateOrg } from '@/utils/test/create-and-authenticate-org'
 
-describe('Create Org (E2E)', () => {
+describe('Create Pet (E2E)', () => {
   beforeAll(async () => {
     app.ready()
   })
@@ -18,18 +18,15 @@ describe('Create Org (E2E)', () => {
     const response = await request(app.server)
       .post('/pets')
       .set('Authorization', `Bearer ${token}`)
-      .send({
-        name: 'Cascão',
-        description: 'Gato Cascão',
-        type: 'CAT',
-        size: 'LARGE',
-        age: 'AGED',
-        ambient: 'MEDIUM',
-        independence_level: 'HIGH',
-        energy_level: 'MEDIUM',
-        organization_id: organization.id,
-        adoption_requirements: [],
-      })
+      .field('name', 'Cascão')
+      .field('description', 'Gato Cascão')
+      .field('type', 'CAT')
+      .field('size', 'LARGE')
+      .field('age', 'AGED')
+      .field('ambient', 'MEDIUM')
+      .field('independence_level', 'HIGH')
+      .field('energy_level', 'MEDIUM')
+      .field('organization_id', organization.id)
 
     expect(response.statusCode).toBe(201)
   })
