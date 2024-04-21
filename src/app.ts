@@ -1,11 +1,14 @@
 import fastifyCookie from '@fastify/cookie'
 import fastifyJwt from '@fastify/jwt'
 import fastify from 'fastify'
+import fastifyMultipart from '@fastify/multipart'
+import fastifyStatic from '@fastify/static'
 import { ZodError } from 'zod'
 import { env } from './env'
 import { orgsRoutes } from './http/controllers/orgs/routes'
 import { petsRoutes } from './http/controllers/pets/routes'
-import fastifyMultipart from '@fastify/multipart'
+import upload from './config/upload'
+import { imagesRoutes } from './http/controllers/images/routes'
 
 export const app = fastify()
 
@@ -20,7 +23,15 @@ app.register(fastifyJwt, {
   },
 })
 app.register(fastifyCookie)
-app.register(fastifyMultipart)
+app.register(fastifyMultipart, {
+  limits: {
+    fileSize: 1024 * 1024 * 3, // 2mb
+  },
+})
+app.register(fastifyStatic, {
+  root: upload.directory,
+})
+app.register(imagesRoutes)
 app.register(orgsRoutes)
 app.register(petsRoutes)
 
@@ -35,6 +46,12 @@ app.setErrorHandler((error, _, reply) => {
     return reply
       .status(401)
       .send({ message: 'Invalid JWT token.', code: error.code })
+  }
+
+  if (error.code === 'FST_REQ_FILE_TOO_LARGE') {
+    return reply
+      .status(413)
+      .send({ message: 'Request file too large.', code: error.code })
   }
 
   if (env.NODE_ENV !== 'production') {
