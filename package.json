@@ -34,6 +34,7 @@
     "@fastify/cookie": "^9.3.1",
     "@fastify/jwt": "^8.0.0",
     "@fastify/multipart": "^8.2.0",
+    "@fastify/static": "^7.0.3",
     "@prisma/client": "^5.12.1",
     "bcryptjs": "^2.4.3",
     "dayjs": "^1.11.10",
