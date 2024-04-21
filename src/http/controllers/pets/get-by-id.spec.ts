@@ -18,18 +18,15 @@ describe('Get Pet By ID (E2E)', () => {
     const petResponse = await request(app.server)
       .post('/pets')
       .set('Authorization', `Bearer ${token}`)
-      .send({
-        name: 'Magali',
-        description: 'Gata Magali',
-        type: 'CAT',
-        size: 'LARGE',
-        age: 'YOUNG',
-        ambient: 'SMALL',
-        independence_level: 'LOW',
-        energy_level: 'LOW',
-        organization_id: organization.id,
-        adoption_requirements: [],
-      })
+      .field('name', 'Magali')
+      .field('description', 'Gato Magali')
+      .field('type', 'CAT')
+      .field('size', 'LARGE')
+      .field('age', 'YOUNG')
+      .field('ambient', 'SMALL')
+      .field('independence_level', 'LOW')
+      .field('energy_level', 'LOW')
+      .field('organization_id', organization.id)
 
     const petId = petResponse.body.pet.id
     const response = await request(app.server).get(`/pets/${petId}`).send()
