@@ -18,18 +18,15 @@ describe('Search Pet (E2E)', () => {
     await request(app.server)
       .post('/pets')
       .set('Authorization', `Bearer ${token}`)
-      .send({
-        name: 'Frajola',
-        description: 'Gato Frajola',
-        type: 'CAT',
-        size: 'LARGE',
-        age: 'AGED',
-        ambient: 'MEDIUM',
-        independence_level: 'HIGH',
-        energy_level: 'LOW',
-        organization_id: organization.id,
-        adoption_requirements: [],
-      })
+      .field('name', 'Frajola')
+      .field('description', 'Gato Frajola')
+      .field('type', 'CAT')
+      .field('size', 'LARGE')
+      .field('age', 'AGED')
+      .field('ambient', 'MEDIUM')
+      .field('independence_level', 'HIGH')
+      .field('energy_level', 'LOW')
+      .field('organization_id', organization.id)
 
     const response = await request(app.server)
       .get('/pets')
