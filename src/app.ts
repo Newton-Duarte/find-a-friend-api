@@ -9,9 +9,11 @@ import { orgsRoutes } from './http/controllers/orgs/routes'
 import { petsRoutes } from './http/controllers/pets/routes'
 import upload from './config/upload'
 import { imagesRoutes } from './http/controllers/images/routes'
+import fastifyCors from '@fastify/cors'
 
 export const app = fastify()
 
+app.register(fastifyCors)
 app.register(fastifyJwt, {
   secret: env.JWT_SECRET,
   cookie: {
